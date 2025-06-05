@@ -1,6 +1,6 @@
 # WeChat Mini Game Unity/Tuanjie Engine SDK (English version)
 
-### This is an English translation of [minigame-unity-webgl-transform](https://github.com/wechat-miniprogram/minigame-unity-webgl-transform/)
+### This is an English translation of [minigame-tuanjie-transform-sdk](https://github.com/wechat-miniprogram/minigame-tuanjie-transform-sdk/)
 
 For the latest features and usage of the WeChat SDK, please read [Unity WebGL WeChat Mini Game Adaptation Solution](https://wechat-miniprogram.github.io/minigame-unity-webgl-transform/).
 
