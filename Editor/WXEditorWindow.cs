@@ -7,16 +7,21 @@ namespace WeChatWASM
 
     public class WXEditorWin : EditorWindow
     {
-        [MenuItem("微信小游戏 / 转换小游戏", false, 1)]
+        [MenuItem("WeChat Mini Game / Convert Mini Game", false, 1)]
         public static void Open()
         {
-            var win = GetWindow(typeof(WXEditorWin), false, "微信小游戏转换工具面板");
+            var win = GetWindow(typeof(WXEditorWin), false, "WeChat Mini Game Conversion Tool Panel");
             win.minSize = new Vector2(350, 400);
-            win.position = new Rect(100, 100, 600, 700);
+            
+            Rect mainWindowPosition = EditorGUIUtility.GetMainWindowPosition();
+            float centerWidth = (mainWindowPosition.width - 600) * 0.5f;
+            float centerHeight = (mainWindowPosition.height - 700) * 0.5f;
+            win.position = new Rect(mainWindowPosition.x + centerWidth, mainWindowPosition.y + centerHeight, 600, 700);
+            
             win.Show();
         }
 
-        // 向前兼容，请使用 WXConvertCore.cs
+        // For backward compatibility, please use WXConvertCore.cs
         public static WXExportError DoExport(bool buildWebGL = true)
         {
             return WXConvertCore.DoExport(buildWebGL);

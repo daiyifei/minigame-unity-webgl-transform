@@ -91,16 +91,16 @@ namespace WeChatWASM
             linkStyle.alignment = TextAnchor.UpperLeft;
             linkStyle.wordWrap = true;
 
-            foldBaseInfo = EditorGUILayout.Foldout(foldBaseInfo, "基本信息");
+            foldBaseInfo = EditorGUILayout.Foldout(foldBaseInfo, "Basic Information");
             if (foldBaseInfo)
             {
                 EditorGUILayout.BeginVertical("frameBox", GUILayout.ExpandWidth(true));
 
-                this.formInput("appid", "游戏AppID");
-                this.formInput("cdn", "游戏资源CDN");
-                this.formInput("projectName", "小游戏项目名");
-                this.formIntPopup("orientation", "游戏方向", new[] { "Portrait", "Landscape", "LandscapeLeft", "LandscapeRight" }, new[] { 0, 1, 2, 3 });
-                this.formInput("memorySize", "UnityHeap预留内存(?)", "单位MB，预分配内存值，超休闲游戏256/中轻度496/重度游戏768，需预估游戏最大UnityHeap值以防止内存自动扩容带来的峰值尖刺。预估方法请查看GIT文档《优化Unity WebGL的内存》");
+                this.formInput("appid", "Game AppID");
+                this.formInput("cdn", "Game Resource CDN");
+                this.formInput("projectName", "Mini Game Project Name");
+                this.formIntPopup("orientation", "Game Orientation", new[] { "Portrait", "Landscape", "LandscapeLeft", "LandscapeRight" }, new[] { 0, 1, 2, 3 });
+                this.formInput("memorySize", "UnityHeap Reserved Memory(?)", "Unit MB, pre-allocated memory value, casual games 256/medium games 496/heavy games 768, need to estimate the maximum UnityHeap value to prevent memory spikes from automatic expansion. Please check GIT documentation 'Optimizing Unity WebGL Memory' for estimation method");
 
                 GUILayout.BeginHorizontal();
                 string targetDst = "dst";
@@ -108,10 +108,10 @@ namespace WeChatWASM
                 {
                     formInputData[targetDst] = "";
                 }
-                EditorGUILayout.LabelField(string.Empty, GUILayout.Width(10));
-                GUILayout.Label(new GUIContent("导出路径(?)", "支持输入相对于项目根目录的相对路径，如：wxbuild"), GUILayout.Width(140));
-                formInputData[targetDst] = GUILayout.TextField(formInputData[targetDst], GUILayout.MaxWidth(EditorGUIUtility.currentViewWidth - 270));
-                if (GUILayout.Button(new GUIContent("打开"), GUILayout.Width(40)))
+                
+                GUILayout.Label(new GUIContent("Export Path(?)", "Supports relative path input relative to project root directory, e.g.: wxbuild"), GUILayout.Width(220));
+                formInputData[targetDst] = GUILayout.TextField(formInputData[targetDst], GUILayout.ExpandWidth(true));
+                if (GUILayout.Button(new GUIContent("Open"), GUILayout.Width(40)))
                 {
                     if (!formInputData[targetDst].Trim().Equals(string.Empty))
                     {
@@ -119,9 +119,9 @@ namespace WeChatWASM
                     }
                     GUIUtility.ExitGUI();
                 }
-                if (GUILayout.Button(new GUIContent("选择"), GUILayout.Width(40)))
+                if (GUILayout.Button(new GUIContent("Select"), GUILayout.Width(50)))
                 {
-                    var dstPath = EditorUtility.SaveFolderPanel("选择你的游戏导出目录", string.Empty, string.Empty);
+                    var dstPath = EditorUtility.SaveFolderPanel("Select your game export directory", string.Empty, string.Empty);
                     if (dstPath != string.Empty)
                     {
                         formInputData[targetDst] = dstPath;
@@ -135,15 +135,16 @@ namespace WeChatWASM
                 EditorGUILayout.EndVertical();
             }
 
-            foldLoadingConfig = EditorGUILayout.Foldout(foldLoadingConfig, "启动Loading配置");
+            foldLoadingConfig = EditorGUILayout.Foldout(foldLoadingConfig, "Loading Configuration");
             if (foldLoadingConfig)
             {
                 EditorGUILayout.BeginVertical("frameBox", GUILayout.ExpandWidth(true));
 
                 GUILayout.BeginHorizontal();
                 string targetBg = "bgImageSrc";
-                EditorGUILayout.LabelField(string.Empty, GUILayout.Width(10));
-                tex = (Texture)EditorGUILayout.ObjectField("启动背景图/视频封面", tex, typeof(Texture2D), false);
+                
+                GUILayout.Label("Startup Background/Video Cover", GUILayout.Width(220));
+                tex = (Texture)EditorGUILayout.ObjectField(tex, typeof(Texture2D), false, GUILayout.ExpandWidth(true));
                 var currentBgSrc = AssetDatabase.GetAssetPath(tex);
                 if (!string.IsNullOrEmpty(currentBgSrc) && currentBgSrc != this.formInputData[targetBg])
                 {
@@ -152,30 +153,30 @@ namespace WeChatWASM
                 }
                 GUILayout.EndHorizontal();
 
-                this.formInput("videoUrl", "加载阶段视频URL");
-                this.formIntPopup("assetLoadType", "首包资源加载方式", new[] { "CDN", "小游戏包内" }, new[] { 0, 1 });
-                this.formCheckbox("compressDataPackage", "压缩首包资源(?)", "将首包资源Brotli压缩, 降低资源大小. 注意: 首次启动耗时可能会增加200ms, 仅推荐使用小游戏分包加载时节省包体大小使用");
-                this.formInput("bundleExcludeExtensions", "不自动缓存文件类型(?)", "(使用;分割)当请求url包含资源'cdn+StreamingAssets'时会自动缓存，但StreamingAssets目录下不是所有文件都需缓存，此选项配置不需要自动缓存的文件拓展名。默认值json");
-                this.formInput("bundleHashLength", "Bundle名称Hash长度(?)", "自定义Bundle文件名中hash部分长度，默认值32，用于缓存控制。");
-                this.formInput("preloadFiles", "预下载文件列表(?)", "使用;间隔，支持模糊匹配");
+                this.formInput("videoUrl", "Loading Stage Video URL");
+                this.formIntPopup("assetLoadType", "Initial Package Loading Method", new[] { "CDN", "Mini Game Package" }, new[] { 0, 1 });
+                this.formCheckbox("compressDataPackage", "Compress Initial Package(?)", "Compress initial package resources with Brotli to reduce resource size. Note: First startup time may increase by 200ms, only recommended when using mini game subpackages to save package size");
+                this.formInput("bundleExcludeExtensions", "File Types Not Auto-cached(?)", "(Separated by ;) When URL contains 'cdn+StreamingAssets', it will auto-cache, but not all files in StreamingAssets need caching, this option configures file extensions not to auto-cache. Default value: json");
+                this.formInput("bundleHashLength", "Bundle Name Hash Length(?)", "Customize hash part length in Bundle filename, default 32, used for cache control.");
+                this.formInput("preloadFiles", "Preload File List(?)", "Use ; as separator, supports fuzzy matching");
 
                 EditorGUILayout.EndVertical();
             }
 
-            foldSDKOptions = EditorGUILayout.Foldout(foldSDKOptions, "SDK功能选项");
+            foldSDKOptions = EditorGUILayout.Foldout(foldSDKOptions, "SDK Feature Options");
             if (foldSDKOptions)
             {
                 EditorGUILayout.BeginVertical("frameBox", GUILayout.ExpandWidth(true));
 
-                this.formCheckbox("useFriendRelation", "使用好友关系链");
-                this.formCheckbox("useMiniGameChat", "使用社交组件");
-                this.formCheckbox("preloadWXFont", "预加载微信字体(?)", "在game.js执行开始时预载微信系统字体，运行期间可使用WX.GetWXFont获取微信字体");
-                this.formCheckbox("disableMultiTouch", "禁用多点触控");
+                this.formCheckbox("useFriendRelation", "Use Friend Relationship");
+                this.formCheckbox("useMiniGameChat", "Use Social Components");
+                this.formCheckbox("preloadWXFont", "Preload WeChat Font(?)", "Preload WeChat system font at game.js execution start, can use WX.GetWXFont to get WeChat font during runtime");
+                this.formCheckbox("disableMultiTouch", "Disable Multi-touch");
 
                 EditorGUILayout.EndVertical();
             }
 
-            foldDebugOptions = EditorGUILayout.Foldout(foldDebugOptions, "调试编译选项");
+            foldDebugOptions = EditorGUILayout.Foldout(foldDebugOptions, "Debug Build Options");
             if (foldDebugOptions)
             {
                 EditorGUILayout.BeginVertical("frameBox", GUILayout.ExpandWidth(true));
@@ -184,32 +185,32 @@ namespace WeChatWASM
                 this.formCheckbox("developBuild", "Development Build", "", false, null, OnDevelopmentBuildToggleChanged);
                 this.formCheckbox("autoProfile", "Auto connect Profiler");
                 this.formCheckbox("scriptOnly", "Scripts Only Build");
-                this.formCheckbox("il2CppOptimizeSize", "Il2Cpp Optimize Size(?)", "对应于Il2CppCodeGeneration选项，勾选时使用OptimizeSize(默认推荐)，生成代码小15%左右，取消勾选则使用OptimizeSpeed。游戏中大量泛型集合的高频访问建议OptimizeSpeed，在使用HybridCLR等第三方组件时只能用OptimizeSpeed。(Dotnet Runtime模式下该选项无效)", !UseIL2CPP);
+                this.formCheckbox("il2CppOptimizeSize", "Il2Cpp Optimize Size(?)", "Corresponds to Il2CppCodeGeneration option, when checked uses OptimizeSize (recommended default), generates about 15% smaller code, when unchecked uses OptimizeSpeed. Games with frequent access to generic collections recommend OptimizeSpeed, when using third-party components like HybridCLR can only use OptimizeSpeed. (This option is invalid in Dotnet Runtime mode)", !UseIL2CPP);
                 this.formCheckbox("profilingFuncs", "Profiling Funcs");
                 this.formCheckbox("profilingMemory", "Profiling Memory");
                 this.formCheckbox("webgl2", "WebGL2.0(beta)");
-                this.formCheckbox("iOSPerformancePlus", "iOSPerformancePlus(?)", "是否使用iOS高性能+渲染方案，有助于提升渲染兼容性、降低WebContent进程内存");
+                this.formCheckbox("iOSPerformancePlus", "iOSPerformancePlus(?)", "Whether to use iOS high performance+ rendering solution, helps improve rendering compatibility and reduce WebContent process memory");
                 this.formCheckbox("deleteStreamingAssets", "Clear Streaming Assets");
                 this.formCheckbox("cleanBuild", "Clean WebGL Build");
                 // this.formCheckbox("cleanCloudDev", "Clean Cloud Dev");
-                this.formCheckbox("fbslim", "首包资源优化(?)", "导出时自动清理UnityEditor默认打包但游戏项目从未使用的资源，瘦身首包资源体积。（团结引擎已无需开启该能力）", UnityUtil.GetEngineVersion() > 0, (res) =>
+                this.formCheckbox("fbslim", "Initial Package Optimization(?)", "Automatically clean up resources that are packaged by UnityEditor by default but never used by the game project during export, slim down initial package size. (Unity engine no longer needs to enable this capability)", UnityUtil.GetEngineVersion() > 0, (res) =>
                 {
-                    var fbWin = EditorWindow.GetWindow(typeof(WXFbSettingWindow), false, "首包资源优化配置面板", true);
+                    var fbWin = EditorWindow.GetWindow(typeof(WXFbSettingWindow), false, "Initial Package Optimization Configuration Panel", true);
                     fbWin.minSize = new Vector2(680, 350);
                     fbWin.Show();
                 });
-                this.formCheckbox("autoAdaptScreen", "自适应屏幕尺寸(?)", "移动端旋转屏幕和PC端拉伸窗口时，自动调整画布尺寸");
-                this.formCheckbox("showMonitorSuggestModal", "显示优化建议弹窗");
-                this.formCheckbox("enableProfileStats", "显示性能面板");
-                this.formCheckbox("enableRenderAnalysis", "显示渲染日志(dev only)");
-                this.formCheckbox("brotliMT", "brotli多线程压缩(?)", "开启多线程压缩可以提高出包速度，但会降低压缩率。如若不使用wasm代码分包请勿用多线程出包上线");
+                this.formCheckbox("autoAdaptScreen", "Auto Adapt Screen Size(?)", "Automatically adjust canvas size when rotating screen on mobile or resizing window on PC");
+                this.formCheckbox("showMonitorSuggestModal", "Show Optimization Suggestion Modal");
+                this.formCheckbox("enableProfileStats", "Show Performance Panel");
+                this.formCheckbox("enableRenderAnalysis", "Show Render Logs(dev only)");
+                this.formCheckbox("brotliMT", "Brotli Multi-thread Compression(?)", "Enable multi-thread compression can improve packaging speed but will reduce compression ratio. Do not use multi-thread packaging for online if not using wasm code subpackaging");
 #if UNITY_6000_0_OR_NEWER
-                this.formCheckbox("enableWasm2023", "WebAssembly 2023(?)", "WebAssembly 2023包括对WebAssembly.Table和BigInt的支持。（Android (Android 10 or later recommended), iOS (iOS 15 or later recommended)）");
+                this.formCheckbox("enableWasm2023", "WebAssembly 2023(?)", "WebAssembly 2023 includes support for WebAssembly.Table and BigInt. (Android (Android 10 or later recommended), iOS (iOS 15 or later recommended))");
 #endif
 
                 if (m_EnablePerfTool)
                 {
-                    this.formCheckbox("enablePerfAnalysis", "集成性能分析工具", "将性能分析工具集成入Development Build包中", false, null, OnPerfAnalysisFeatureToggleChanged);
+                    this.formCheckbox("enablePerfAnalysis", "Integrate Performance Analysis Tool", "Integrate performance analysis tool into Development Build package", false, null, OnPerfAnalysisFeatureToggleChanged);
                 }
 
                 EditorGUILayout.EndVertical();
@@ -225,14 +226,14 @@ namespace WeChatWASM
                 this.formInput("dataFileSubPrefix", "Data File Sub Prefix");
 
                 EditorGUI.BeginDisabledGroup(true);
-                this.formCheckbox("autoUploadFirstBundle", "构建后自动上传首包(?)", "仅在开启AutoStreaming生效", true);
+                this.formCheckbox("autoUploadFirstBundle", "Build and Auto-upload First Bundle(?)", "Only effective when AutoStreaming is enabled", true);
                 EditorGUI.EndDisabledGroup();
 
                 GUILayout.BeginHorizontal();
-                EditorGUILayout.LabelField(string.Empty, GUILayout.Width(10));
-                GUILayout.Label(new GUIContent("清理AS配置(?)", "如需关闭AutoStreaming选用默认发布方案则需要清理AS配置项目。"), GUILayout.Width(140));
+                
+                GUILayout.Label(new GUIContent("Clear AS Configuration(?)", "If you want to close AutoStreaming and use default publishing scheme, you need to clear AS configuration project."), GUILayout.Width(140));
                 EditorGUI.BeginDisabledGroup(WXConvertCore.IsInstantGameAutoStreaming());
-                if(GUILayout.Button(new GUIContent("恢复"),GUILayout.Width(60))){
+                if(GUILayout.Button(new GUIContent("Restore"),GUILayout.Width(60))){
                     string identifier = config.ProjectConf.bundlePathIdentifier;
                     string[] identifiers = identifier.Split(";");
                     string idStr = "";
@@ -255,7 +256,7 @@ namespace WeChatWASM
 
                 EditorGUILayout.BeginHorizontal();
                 EditorGUILayout.LabelField(string.Empty);
-                if (GUILayout.Button(new GUIContent("了解Instant Game AutoStreaming", ""), linkStyle))
+                if (GUILayout.Button(new GUIContent("Learn Instant Game AutoStreaming", ""), linkStyle))
                 {
                     Application.OpenURL("https://github.com/wechat-miniprogram/minigame-unity-webgl-transform/blob/main/Design/InstantGameGuide.md");
                 }
@@ -263,29 +264,29 @@ namespace WeChatWASM
                 EditorGUILayout.EndVertical();
             }
 #endif
-            foldFontOptions = EditorGUILayout.Foldout(foldFontOptions, "字体配置");
+            foldFontOptions = EditorGUILayout.Foldout(foldFontOptions, "Font Configuration");
             if (foldFontOptions)
             {
                 EditorGUILayout.BeginVertical("frameBox", GUILayout.ExpandWidth(true));
-                this.formCheckbox("CJK_Unified_Ideographs", "基本汉字(?)", "Unicode [0x4e00, 0x9fff]");
-                this.formCheckbox("C0_Controls_and_Basic_Latin", "基本拉丁语（英文大小写、数字、英文标点）(?)", "Unicode [0x0, 0x7f]");
-                this.formCheckbox("CJK_Symbols_and_Punctuation", "中文标点符号(?)", "Unicode [0x3000, 0x303f]");
-                this.formCheckbox("General_Punctuation", "通用标点符号(?)", "Unicode [0x2000, 0x206f]");
-                this.formCheckbox("Enclosed_CJK_Letters_and_Months", "CJK字母及月份(?)", "Unicode [0x3200, 0x32ff]");
-                this.formCheckbox("Vertical_Forms", "中文竖排标点(?)", "Unicode [0xfe10, 0xfe1f]");
-                this.formCheckbox("CJK_Compatibility_Forms", "CJK兼容符号(?)", "Unicode [0xfe30, 0xfe4f]");
-                this.formCheckbox("Miscellaneous_Symbols", "杂项符号(?)", "Unicode [0x2600, 0x26ff]");
-                this.formCheckbox("CJK_Compatibility", "CJK特殊符号(?)", "Unicode [0x3300, 0x33ff]");
-                this.formCheckbox("Halfwidth_and_Fullwidth_Forms", "全角ASCII、全角中英文标点、半宽片假名、半宽平假名、半宽韩文字母(?)", "Unicode [0xff00, 0xffef]");
-                this.formCheckbox("Dingbats", "装饰符号(?)", "Unicode [0x2700, 0x27bf]");
-                this.formCheckbox("Letterlike_Symbols", "字母式符号(?)", "Unicode [0x2100, 0x214f]");
-                this.formCheckbox("Enclosed_Alphanumerics", "带圈或括号的字母数字(?)", "Unicode [0x2460, 0x24ff]");
-                this.formCheckbox("Number_Forms", "数字形式(?)", "Unicode [0x2150, 0x218f]");
-                this.formCheckbox("Currency_Symbols", "货币符号(?)", "Unicode [0x20a0, 0x20cf]");
-                this.formCheckbox("Arrows", "箭头(?)", "Unicode [0x2190, 0x21ff]");
-                this.formCheckbox("Geometric_Shapes", "几何图形(?)", "Unicode [0x25a0, 0x25ff]");
-                this.formCheckbox("Mathematical_Operators", "数学运算符号(?)", "Unicode [0x2200, 0x22ff]");
-                this.formInput("CustomUnicode", "自定义Unicode(?)", "将填入的所有字符强制加入字体预加载列表");
+                this.formCheckbox("CJK_Unified_Ideographs", "Basic Chinese Characters(?)", "Unicode [0x4e00, 0x9fff]");
+                this.formCheckbox("C0_Controls_and_Basic_Latin", "Basic Latin (English uppercase/lowercase, numbers, punctuation)(?)", "Unicode [0x0, 0x7f]");
+                this.formCheckbox("CJK_Symbols_and_Punctuation", "Chinese Punctuation(?)", "Unicode [0x3000, 0x303f]");
+                this.formCheckbox("General_Punctuation", "General Punctuation(?)", "Unicode [0x2000, 0x206f]");
+                this.formCheckbox("Enclosed_CJK_Letters_and_Months", "CJK Letters and Months(?)", "Unicode [0x3200, 0x32ff]");
+                this.formCheckbox("Vertical_Forms", "Chinese Vertical Punctuation(?)", "Unicode [0xfe10, 0xfe1f]");
+                this.formCheckbox("CJK_Compatibility_Forms", "CJK Compatibility Symbols(?)", "Unicode [0xfe30, 0xfe4f]");
+                this.formCheckbox("Miscellaneous_Symbols", "Miscellaneous Symbols(?)", "Unicode [0x2600, 0x26ff]");
+                this.formCheckbox("CJK_Compatibility", "CJK Special Symbols(?)", "Unicode [0x3300, 0x33ff]");
+                this.formCheckbox("Halfwidth_and_Fullwidth_Forms", "Full-width ASCII, Chinese/English Punctuation, Half-width Kana/Hiragana/Korean(?)", "Unicode [0xff00, 0xffef]");
+                this.formCheckbox("Dingbats", "Decorative Symbols(?)", "Unicode [0x2700, 0x27bf]");
+                this.formCheckbox("Letterlike_Symbols", "Letter-like Symbols(?)", "Unicode [0x2100, 0x214f]");
+                this.formCheckbox("Enclosed_Alphanumerics", "Enclosed Alphanumerics(?)", "Unicode [0x2460, 0x24ff]");
+                this.formCheckbox("Number_Forms", "Number Forms(?)", "Unicode [0x2150, 0x218f]");
+                this.formCheckbox("Currency_Symbols", "Currency Symbols(?)", "Unicode [0x20a0, 0x20cf]");
+                this.formCheckbox("Arrows", "Arrows(?)", "Unicode [0x2190, 0x21ff]");
+                this.formCheckbox("Geometric_Shapes", "Geometric Shapes(?)", "Unicode [0x25a0, 0x25ff]");
+                this.formCheckbox("Mathematical_Operators", "Mathematical Operators(?)", "Unicode [0x2200, 0x22ff]");
+                this.formInput("CustomUnicode", "Custom Unicode(?)", "Force add all input characters to font preload list");
                 EditorGUILayout.EndVertical();
             }
 
@@ -301,54 +302,54 @@ namespace WeChatWASM
             linkStyle.alignment = TextAnchor.UpperLeft;
             linkStyle.wordWrap = true;
             EditorGUILayout.BeginHorizontal();
-            if (GUILayout.Button(new GUIContent("更多配置项"), GUILayout.Width(100), GUILayout.Height(25)))
+            if (GUILayout.Button(new GUIContent("More Configuration"), GUILayout.Width(120), GUILayout.Height(25)))
             {
                 var minigameConfig = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>("Assets/WX-WASM-SDK-V2/Editor/MiniGameConfig.asset");
                 Selection.activeObject = minigameConfig;
                 GUIUtility.ExitGUI();
             }
-            if (GUILayout.Button(new GUIContent("WebGL转小游戏(不常用)"), GUILayout.Width(150), GUILayout.Height(25)))
+            if (GUILayout.Button(new GUIContent("WebGL to Mini Game(Rarely Used)"), GUILayout.Width(210), GUILayout.Height(25)))
             {
                 this.saveData();
                 if (WXConvertCore.DoExport(false) == WXConvertCore.WXExportError.SUCCEED)
                 {
-                    window.ShowNotification(new GUIContent("转换完成"));
+                    window.ShowNotification(new GUIContent("Conversion Complete"));
                 }
 
                 GUIUtility.ExitGUI();
             }
             EditorGUILayout.LabelField(string.Empty, GUILayout.MinWidth(10));
-            if (GUILayout.Button(new GUIContent("生成并转换"), GUILayout.Width(100), GUILayout.Height(25)))
+            if (GUILayout.Button(new GUIContent("Generate and Convert"), GUILayout.Width(140), GUILayout.Height(25)))
             {
                 this.saveData();
                 if (WXConvertCore.DoExport() == WXConvertCore.WXExportError.SUCCEED)
                 {
                     if (!WXConvertCore.IsInstantGameAutoStreaming())
-                        window.ShowNotification(new GUIContent("转换完成"));
+                        window.ShowNotification(new GUIContent("Conversion Complete"));
                     else
                     {
 #if (UNITY_WEBGL || WEIXINMINIGAME) && UNITY_INSTANTGAME
-                        // 上传首包资源
+                        // Upload initial package resources
                         if (!string.IsNullOrEmpty(WXConvertCore.FirstBundlePath) && File.Exists(WXConvertCore.FirstBundlePath))
                         {
                             if (Unity.InstantGame.IGBuildPipeline.UploadWeChatDataFile(WXConvertCore.FirstBundlePath))
                             {
-                                Debug.Log("转换完成并成功上传首包资源");
-                                window.ShowNotification(new GUIContent("转换完成并成功上传"));
+                                Debug.Log("Conversion complete and initial package resources uploaded successfully");
+                                window.ShowNotification(new GUIContent("Conversion and upload complete"));
                             }
                             else
                             {
-                                Debug.LogError("首包资源上传失败，请检查网络以及Auto Streaming配置是否正确。");
-                                window.ShowNotification(new GUIContent("上传失败"));
+                                Debug.LogError("Initial package resource upload failed, please check network and Auto Streaming configuration.");
+                                window.ShowNotification(new GUIContent("Upload failed"));
                             }
                         }
                         else
                         {
-                            Debug.LogError("转换失败");
-                            window.ShowNotification(new GUIContent("转换失败"));
+                            Debug.LogError("Conversion failed");
+                            window.ShowNotification(new GUIContent("Conversion failed"));
                         }
 #else
-                        window.ShowNotification(new GUIContent("转换完成"));
+                        window.ShowNotification(new GUIContent("Conversion Complete"));
 #endif
                     }
                 }
@@ -358,7 +359,7 @@ namespace WeChatWASM
 
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.LabelField(string.Empty);
-            if (GUILayout.Button(new GUIContent("了解如何实现自定义构建", ""), linkStyle))
+            if (GUILayout.Button(new GUIContent("Learn how to implement custom build", ""), linkStyle))
             {
                 Application.OpenURL("https://wechat-miniprogram.github.io/minigame-unity-webgl-transform/Design/DevelopmentQAList.html#_13-%E5%A6%82%E4%BD%95%E8%87%AA%E5%AE%9A%E4%B9%89%E6%8E%A5%E5%85%A5%E6%9E%84%E5%BB%BA%E6%B5%81%E7%A8%8B");
                 GUIUtility.ExitGUI();
@@ -640,16 +641,16 @@ namespace WeChatWASM
                 formInputData[target] = "";
             }
             GUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField(string.Empty, GUILayout.Width(10));
+            
             if (help == null)
             {
-                GUILayout.Label(label, GUILayout.Width(140));
+                GUILayout.Label(label, GUILayout.Width(220));
             }
             else
             {
-                GUILayout.Label(new GUIContent(label, help), GUILayout.Width(140));
+                GUILayout.Label(new GUIContent(label, help), GUILayout.Width(220));
             }
-            formInputData[target] = GUILayout.TextField(formInputData[target], GUILayout.MaxWidth(EditorGUIUtility.currentViewWidth - 195));
+            formInputData[target] = GUILayout.TextField(formInputData[target], GUILayout.ExpandWidth(true));
             GUILayout.EndHorizontal();
         }
 
@@ -660,9 +661,9 @@ namespace WeChatWASM
                 formIntPopupData[target] = 0;
             }
             GUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField(string.Empty, GUILayout.Width(10));
-            GUILayout.Label(label, GUILayout.Width(140));
-            formIntPopupData[target] = EditorGUILayout.IntPopup(formIntPopupData[target], options, values, GUILayout.MaxWidth(EditorGUIUtility.currentViewWidth - 195));
+            
+            GUILayout.Label(label, GUILayout.Width(220));
+            formIntPopupData[target] = EditorGUILayout.IntPopup(formIntPopupData[target], options, values, GUILayout.ExpandWidth(true));
             GUILayout.EndHorizontal();
         }
 
@@ -673,19 +674,19 @@ namespace WeChatWASM
                 formCheckboxData[target] = false;
             }
             GUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField(string.Empty, GUILayout.Width(10));
+            
             if (help == null)
             {
-                GUILayout.Label(label, GUILayout.Width(140));
+                GUILayout.Label(label, GUILayout.Width(220));
             }
             else
             {
-                GUILayout.Label(new GUIContent(label, help), GUILayout.Width(140));
+                GUILayout.Label(new GUIContent(label, help), GUILayout.Width(220));
             }
             EditorGUI.BeginDisabledGroup(disable);
 
             // Toggle the checkbox value based on the disable condition
-            bool newValue = EditorGUILayout.Toggle(disable ? false : formCheckboxData[target]);
+            bool newValue = EditorGUILayout.Toggle(disable ? false : formCheckboxData[target], GUILayout.Width(20));
             // Update the checkbox data if the value has changed and invoke the onValueChanged action
             if (newValue != formCheckboxData[target])
             {
@@ -696,24 +697,21 @@ namespace WeChatWASM
             if (setting != null)
             {
                 EditorGUILayout.LabelField("", GUILayout.Width(10));
-                // 配置按钮
-                if (GUILayout.Button(new GUIContent("设置"), GUILayout.Width(40), GUILayout.Height(18)))
+                // Configuration button
+                if (GUILayout.Button(new GUIContent("Config"), GUILayout.Width(50), GUILayout.Height(18)))
                 {
                     setting?.Invoke(true);
                 }
-                EditorGUILayout.LabelField("", GUILayout.MinWidth(10));
             }
 
             EditorGUI.EndDisabledGroup();
-
-            if (setting == null)
-                EditorGUILayout.LabelField(string.Empty);
+            GUILayout.FlexibleSpace(); // 添加弹性空间，使复选框右对齐
             GUILayout.EndHorizontal();
         }
 
         private void OnDevelopmentBuildToggleChanged(bool InNewValue)
         {
-            // 针对non-dev build，取消性能分析工具的集成
+            // For non-dev build, disable performance analysis tool integration
             if (!InNewValue)
             {
                 this.setData("enablePerfAnalysis", false);
@@ -722,7 +720,7 @@ namespace WeChatWASM
 
         private void OnPerfAnalysisFeatureToggleChanged(bool InNewValue)
         {
-            // 针对non-dev build，取消性能分析工具的集成
+            // For non-dev build, disable performance analysis tool integration
             if (!formCheckboxData["developBuild"] && InNewValue)
             {
                 this.setData("enablePerfAnalysis", false);
@@ -740,7 +738,7 @@ namespace WeChatWASM
             if (shouldAddSymbol)
             {
                 shouldAddSymbol = false;
-                EditorUtility.DisplayDialog("警告", $"当前Unity版本({Application.unityVersion})不在性能分析工具适配范围内(2021.2-2023.1), 性能分析工具将被禁用。", "确定");
+                EditorUtility.DisplayDialog("Warning", $"Current Unity version ({Application.unityVersion}) is not in the supported range (2021.2-2023.1) for performance analysis tool, the tool will be disabled.", "OK");
                 config.CompileOptions.enablePerfAnalysis = false;
                 this.setData("enablePerfAnalysis", false);
             }
@@ -755,7 +753,7 @@ namespace WeChatWASM
             }
             else
             {
-                // 删除掉已有的ENABLE_WX_PERF_FEATURE
+                // Remove existing ENABLE_WX_PERF_FEATURE
                 if (defineSymbols.IndexOf(MACRO_ENABLE_WX_PERF_FEATURE) != -1)
                 {
                     defineSymbols = defineSymbols.Replace(MACRO_ENABLE_WX_PERF_FEATURE, "").Replace(";;", ";").Trim(';');
@@ -766,25 +764,25 @@ namespace WeChatWASM
 
         public static bool IsAbsolutePath(string path)
         {
-            // 检查是否为空或空白
+            // Check if empty or whitespace
             if (string.IsNullOrWhiteSpace(path))
             {
                 return false;
             }
 
-            // 在 Windows 上，检查驱动器字母或网络路径
+            // On Windows, check for drive letter or network path
             if (Application.platform == RuntimePlatform.WindowsEditor && Path.IsPathRooted(path))
             {
                 return true;
             }
 
-            // 在 Unix/Linux 和 macOS 上，检查是否以 '/' 开头
+            // On Unix/Linux and macOS, check if starts with '/'
             if (Application.platform == RuntimePlatform.OSXEditor && path.StartsWith("/"))
             {
                 return true;
             }
 
-            return false; // 否则为相对路径
+            return false; // Otherwise, it's a relative path
         }
 
         public static string GetAbsolutePath(string path)
