@@ -1,15 +1,15 @@
-# 微信小游戏Unity/团结引擎SDK
+# WeChat Mini Game Unity/Tuanjie Engine SDK (English versiion)
 
-有关微信SDK的最新特性与使用请阅读 [Unity WebGL 微信小游戏适配方案](https://wechat-miniprogram.github.io/minigame-unity-webgl-transform/)。
+For the latest features and usage of the WeChat SDK, please read [Unity WebGL WeChat Mini Game Adaptation Solution](https://wechat-miniprogram.github.io/minigame-unity-webgl-transform/).
 
-## 安装指南
+## Installation Guide
 
-使用Unity引擎或[团结引擎](https://unity.cn/tuanjie/tuanjieyinqing)创建/打开游戏工程，
-Unity Editor 菜单栏 `Window` - `Package Manager` - `右上 + 按钮` - `Add package from git URL...` 输入本仓库Git资源地址即可。
+Create/open your game project using Unity Engine or [Tuanjie Engine](https://unity.cn/tuanjie/tuanjieyinqing),
+Go to Unity Editor menu bar `Window` - `Package Manager` - `+ button in top right` - `Add package from git URL...` and enter this repository's Git URL.
 
-如：`https://github.com/wechat-miniprogram/minigame-tuanjie-transform-sdk.git`
+For example: `https://github.com/wechat-miniprogram/minigame-tuanjie-transform-sdk.git`
 
-## 常见问题
+## Common Issues
 
-#### 1.游戏工程可以导出但在微信开发者工具运行提示报错：
-常见的情况是发生在如空项目或游戏代码中从未使用WXSDK的任何Runtime能力时，团结引擎导出项目将微信Runtime包裁剪，解决办法是在游戏合理位置增加对WXSDK的使用即可。
+#### 1. Game project can be exported but shows errors when running in WeChat Developer Tools:
+This commonly occurs in cases such as empty projects or when the game code has never used any Runtime capabilities of WXSDK. The Tuanjie Engine will trim the WeChat Runtime package during export. The solution is to add appropriate usage of WXSDK in your game code.
